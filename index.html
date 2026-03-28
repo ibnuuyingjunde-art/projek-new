@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>M1yuun Downloader</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            background: #0a0f1a;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            max-width: 600px;
+            width: 90%;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            border: 1px solid rgba(0,212,255,0.3);
+        }
+        h1 {
+            text-align: center;
+            color: #00d4ff;
+            margin-bottom: 20px;
+        }
+        input {
+            width: 100%;
+            padding: 12px;
+            background: #1a1f2e;
+            border: 1px solid #00d4ff;
+            color: white;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #00d4ff;
+            border: none;
+            color: #0a0f1a;
+            font-weight: bold;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            background: #1a1f2e;
+            border-radius: 10px;
+            display: none;
+        }
+        .result a {
+            color: #00d4ff;
+            word-break: break-all;
+        }
+        .loader {
+            text-align: center;
+            display: none;
+            margin-top: 20px;
+        }
+        .error {
+            color: #ff4444;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 10px;
+            background: #1a1f2e;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 10px;
+        }
+        .tab-btn.active {
+            background: #00d4ff;
+            color: #0a0f1a;
+        }
+        .tab-pane {
+            display: none;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎬 M1yuun Downloader</h1>
+        
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="instagram">Instagram</button>
+            <button class="tab-btn" data-tab="tiktok">TikTok</button>
+            <button class="tab-btn" data-tab="youtube">YouTube</button>
+        </div>
+
+        <div id="instagram" class="tab-pane active">
+            <input type="text" id="igUrl" placeholder="Tempel link Instagram (Reel/Post/Story)...">
+            <button onclick="download('instagram')">Download Video</button>
+        </div>
+
+        <div id="tiktok" class="tab-pane">
+            <input type="text" id="ttUrl" placeholder="Tempel link TikTok...">
+            <button onclick="download('tiktok')">Download Video (No Watermark)</button>
+        </div>
+
+        <div id="youtube" class="tab-pane">
+            <input type="text" id="ytUrl" placeholder="Tempel link YouTube...">
+            <button onclick="download('youtube')">Download MP4 / MP3</button>
+        </div>
+
+        <div id="loader" class="loader">⏳ Sedang memproses...</div>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        // Fungsi download (API pake saveclip.app)
+        async function download(platform) {
+            let url = '';
+            if (platform === 'instagram') url = document.getElementById('igUrl').value;
+            if (platform === 'tiktok') url = document.getElementById('ttUrl').value;
+            if (platform === 'youtube') url = document.getElementById('ytUrl').value;
+            
+            if (!url) return alert('Masukkan link dulu!');
+            
+            document.getElementById('loader').style.display = 'block';
+            document.getElementById('result').style.display = 'none';
+            
+            try {
+                let apiUrl = '';
+                if (platform === 'instagram') apiUrl = `https://saveclip.app/api?url=${encodeURIComponent(url)}`;
+                if (platform === 'tiktok') apiUrl = `https://musicaldown.com/api/download?url=${encodeURIComponent(url)}`;
+                if (platform === 'youtube') apiUrl = `https://youtube-mp3-downloader2.p.rapidapi.com/download?url=${encodeURIComponent(url)}`;
+                
+                const res = await fetch(apiUrl);
+                const data = await res.json();
+                
+                document.getElementById('loader').style.display = 'none';
+                const resultDiv = document.getElementById('result');
+                
+                if (data.video_url || data.download_url) {
+                    const downloadUrl = data.video_url || data.download_url;
+                    resultDiv.innerHTML = `
+                        ✅ Video siap download!<br>
+                        <a href="${downloadUrl}" target="_blank" download>⬇️ Klik untuk download</a>
+                    `;
+                } else if (data.error) {
+                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
+                } else {
+                    resultDiv.innerHTML = `<div class="error">❌ Gagal mendapatkan link download</div>`;
+                }
+                resultDiv.style.display = 'block';
+                
+            } catch (err) {
+                document.getElementById('loader').style.display = 'none';
+                document.getElementById('result').innerHTML = `<div class="error">❌ Error: ${err.message}</div>`;
+                document.getElementById('result').style.display = 'block';
+            }
+        }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+                document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
