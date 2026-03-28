@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M1yuun Downloader</title>
+    <title>M1yuun Downloader - Download Video IG, TikTok, YouTube</title>
     <style>
         * {
             margin: 0;
@@ -11,166 +11,328 @@
             box-sizing: border-box;
         }
         body {
-            background: #0a0f1a;
-            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0f1a 0%, #0f172a 100%);
+            font-family: 'Poppins', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             color: white;
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 20px;
         }
         .container {
-            max-width: 600px;
-            width: 90%;
-            background: rgba(255,255,255,0.1);
+            max-width: 700px;
+            width: 100%;
+            margin: 0 auto;
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
-            border-radius: 20px;
+            border-radius: 24px;
             padding: 30px;
-            border: 1px solid rgba(0,212,255,0.3);
+            border: 1px solid rgba(0, 212, 255, 0.3);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         h1 {
             text-align: center;
-            color: #00d4ff;
+            background: linear-gradient(135deg, #00d4ff, #3b82f6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+        .sub {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: #1e293b;
+            border: none;
+            color: white;
+            cursor: pointer;
+            border-radius: 40px;
+            font-weight: 600;
+            transition: 0.3s;
+            font-size: 1rem;
+        }
+        .tab-btn.active {
+            background: linear-gradient(135deg, #00d4ff, #3b82f6);
+            color: #0f172a;
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .tab-pane.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .input-group {
             margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #cbd5e1;
+            font-weight: 500;
         }
         input {
             width: 100%;
-            padding: 12px;
-            background: #1a1f2e;
-            border: 1px solid #00d4ff;
+            padding: 14px 16px;
+            background: #0f172a;
+            border: 1px solid #334155;
             color: white;
-            border-radius: 10px;
-            margin-bottom: 15px;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: 0.2s;
+        }
+        input:focus {
+            outline: none;
+            border-color: #00d4ff;
+            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
         }
         button {
             width: 100%;
-            padding: 12px;
-            background: #00d4ff;
+            padding: 14px;
+            background: linear-gradient(135deg, #00d4ff, #3b82f6);
             border: none;
-            color: #0a0f1a;
+            color: #0f172a;
             font-weight: bold;
-            border-radius: 10px;
+            border-radius: 40px;
             cursor: pointer;
+            font-size: 1rem;
+            transition: 0.2s;
         }
-        .result {
-            margin-top: 20px;
-            padding: 15px;
-            background: #1a1f2e;
-            border-radius: 10px;
-            display: none;
-        }
-        .result a {
-            color: #00d4ff;
-            word-break: break-all;
+        button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.4);
         }
         .loader {
             text-align: center;
             display: none;
-            margin-top: 20px;
+            margin: 20px 0;
+        }
+        .loader span {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #00d4ff;
+            border-radius: 50%;
+            margin: 0 3px;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+        .loader span:nth-child(1) { animation-delay: -0.32s; }
+        .loader span:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+        .result {
+            margin-top: 25px;
+            padding: 20px;
+            background: #1e293b;
+            border-radius: 16px;
+            display: none;
+            border-left: 4px solid #00d4ff;
+        }
+        .result a {
+            color: #00d4ff;
+            word-break: break-all;
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .result a:hover {
+            text-decoration: underline;
         }
         .error {
-            color: #ff4444;
+            color: #f87171;
+            border-left-color: #f87171;
         }
-        .tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+        .success {
+            color: #4ade80;
+            border-left-color: #4ade80;
         }
-        .tab-btn {
-            flex: 1;
-            padding: 10px;
-            background: #1a1f2e;
-            border: none;
-            color: white;
-            cursor: pointer;
-            border-radius: 10px;
+        .info-text {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-top: 15px;
+            text-align: center;
         }
-        .tab-btn.active {
-            background: #00d4ff;
-            color: #0a0f1a;
+        footer {
+            text-align: center;
+            margin-top: 30px;
+            color: #475569;
+            font-size: 0.8rem;
         }
-        .tab-pane {
-            display: none;
-        }
-        .tab-pane.active {
-            display: block;
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .tab-btn { font-size: 0.8rem; padding: 10px; }
+            h1 { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎬 M1yuun Downloader</h1>
+        <div class="sub">Download video dari Instagram, TikTok, YouTube — GRATIS & CEPAT!</div>
         
         <div class="tabs">
-            <button class="tab-btn active" data-tab="instagram">Instagram</button>
-            <button class="tab-btn" data-tab="tiktok">TikTok</button>
-            <button class="tab-btn" data-tab="youtube">YouTube</button>
+            <button class="tab-btn active" data-tab="instagram">📷 Instagram</button>
+            <button class="tab-btn" data-tab="tiktok">🎵 TikTok</button>
+            <button class="tab-btn" data-tab="youtube">▶️ YouTube</button>
         </div>
 
         <div id="instagram" class="tab-pane active">
-            <input type="text" id="igUrl" placeholder="Tempel link Instagram (Reel/Post/Story)...">
-            <button onclick="download('instagram')">Download Video</button>
+            <div class="input-group">
+                <label>🔗 Link Instagram</label>
+                <input type="text" id="igUrl" placeholder="https://www.instagram.com/p/... atau https://www.instagram.com/reel/...">
+            </div>
+            <button onclick="downloadVideo('instagram')">⬇️ Download Video</button>
         </div>
 
         <div id="tiktok" class="tab-pane">
-            <input type="text" id="ttUrl" placeholder="Tempel link TikTok...">
-            <button onclick="download('tiktok')">Download Video (No Watermark)</button>
+            <div class="input-group">
+                <label>🔗 Link TikTok</label>
+                <input type="text" id="ttUrl" placeholder="https://www.tiktok.com/@username/video/...">
+            </div>
+            <button onclick="downloadVideo('tiktok')">⬇️ Download Video (Tanpa Watermark)</button>
         </div>
 
         <div id="youtube" class="tab-pane">
-            <input type="text" id="ytUrl" placeholder="Tempel link YouTube...">
-            <button onclick="download('youtube')">Download MP4 / MP3</button>
+            <div class="input-group">
+                <label>🔗 Link YouTube</label>
+                <input type="text" id="ytUrl" placeholder="https://www.youtube.com/watch?v=...">
+            </div>
+            <button onclick="downloadVideo('youtube')">⬇️ Download MP4 / MP3</button>
         </div>
 
-        <div id="loader" class="loader">⏳ Sedang memproses...</div>
+        <div class="loader" id="loader">
+            <span></span><span></span><span></span>
+            <span style="width: auto; background: none; color: #94a3b8;"> Memproses link...</span>
+        </div>
         <div id="result" class="result"></div>
+        <div class="info-text">
+            💡 Cara pakai: Copy link video dari IG/TikTok/YouTube → Paste di atas → Klik Download
+        </div>
+        <footer>
+            M1yuunStore © 2025 | Downloader gratis tanpa ribet
+        </footer>
     </div>
 
     <script>
-        // Fungsi download (API pake saveclip.app)
-        async function download(platform) {
+        async function downloadVideo(platform) {
             let url = '';
-            if (platform === 'instagram') url = document.getElementById('igUrl').value;
-            if (platform === 'tiktok') url = document.getElementById('ttUrl').value;
-            if (platform === 'youtube') url = document.getElementById('ytUrl').value;
+            if (platform === 'instagram') url = document.getElementById('igUrl').value.trim();
+            if (platform === 'tiktok') url = document.getElementById('ttUrl').value.trim();
+            if (platform === 'youtube') url = document.getElementById('ytUrl').value.trim();
             
-            if (!url) return alert('Masukkan link dulu!');
+            if (!url) {
+                showResult('error', '⚠️ Masukkan link dulu, goblok!');
+                return;
+            }
             
-            document.getElementById('loader').style.display = 'block';
-            document.getElementById('result').style.display = 'none';
+            showLoader(true);
             
             try {
                 let apiUrl = '';
-                if (platform === 'instagram') apiUrl = `https://saveclip.app/api?url=${encodeURIComponent(url)}`;
-                if (platform === 'tiktok') apiUrl = `https://musicaldown.com/api/download?url=${encodeURIComponent(url)}`;
-                if (platform === 'youtube') apiUrl = `https://youtube-mp3-downloader2.p.rapidapi.com/download?url=${encodeURIComponent(url)}`;
                 
-                const res = await fetch(apiUrl);
-                const data = await res.json();
-                
-                document.getElementById('loader').style.display = 'none';
-                const resultDiv = document.getElementById('result');
-                
-                if (data.video_url || data.download_url) {
-                    const downloadUrl = data.video_url || data.download_url;
-                    resultDiv.innerHTML = `
-                        ✅ Video siap download!<br>
-                        <a href="${downloadUrl}" target="_blank" download>⬇️ Klik untuk download</a>
-                    `;
-                } else if (data.error) {
-                    resultDiv.innerHTML = `<div class="error">❌ ${data.error}</div>`;
-                } else {
-                    resultDiv.innerHTML = `<div class="error">❌ Gagal mendapatkan link download</div>`;
+                if (platform === 'instagram') {
+                    apiUrl = `https://saveclip.app/api?url=${encodeURIComponent(url)}`;
+                } 
+                else if (platform === 'tiktok') {
+                    apiUrl = `https://musicaldown.com/api/download?url=${encodeURIComponent(url)}`;
                 }
-                resultDiv.style.display = 'block';
+                else if (platform === 'youtube') {
+                    apiUrl = `https://youtube-mp3-downloader2.p.rapidapi.com/download?url=${encodeURIComponent(url)}`;
+                    // Fallback ke API lain kalo yang ini error
+                    const res = await fetch(`https://noembed.com/embed?url=${encodeURIComponent(url)}`);
+                    const data = await res.json();
+                    if (data.thumbnail_url) {
+                        showResult('success', '✅ YouTube Video', `<a href="https://youtube.com/watch?v=${url.split('v=')[1]}" target="_blank">Klik untuk download via YouTube</a><br><small>Catatan: YouTube butuh tool eksternal untuk download langsung. Rekomendasi: y2mate.com</small>`);
+                        showLoader(false);
+                        return;
+                    }
+                }
+                
+                if (apiUrl) {
+                    const response = await fetch(apiUrl);
+                    const data = await response.json();
+                    
+                    let downloadUrl = data.video_url || data.download_url || data.video || data.url;
+                    
+                    if (platform === 'tiktok' && !downloadUrl) {
+                        downloadUrl = data.result?.video || data.link;
+                    }
+                    
+                    if (downloadUrl) {
+                        showResult('success', '✅ Video siap download!', `<a href="${downloadUrl}" target="_blank" download>⬇️ Klik di sini untuk download (klik kanan → save link as)</a><br><small>File akan terbuka di tab baru. Klik kanan pilih "Save video as..."</small>`);
+                    } else {
+                        showResult('error', '❌ Gagal mendapatkan link download', 'Coba cek link lagi atau coba platform lain.');
+                    }
+                } else {
+                    showResult('error', '❌ Error', 'Gagal memproses link. Coba lagi nanti.');
+                }
                 
             } catch (err) {
-                document.getElementById('loader').style.display = 'none';
-                document.getElementById('result').innerHTML = `<div class="error">❌ Error: ${err.message}</div>`;
-                document.getElementById('result').style.display = 'block';
+                console.error(err);
+                
+                if (platform === 'instagram') {
+                    showResult('error', '❌ Gagal download Instagram', 'Coba pakai link dari Reel atau Post yang publik. Link story biasanya gak bisa.');
+                } 
+                else if (platform === 'tiktok') {
+                    showResult('error', '❌ Gagal download TikTok', 'Coba pastikan link-nya bener dan videonya publik.');
+                }
+                else if (platform === 'youtube') {
+                    showResult('info', '🎵 YouTube Download', 'Karena YouTube punya proteksi, download langsung via: <a href="https://y2mate.com" target="_blank" style="color:#00d4ff">y2mate.com</a> atau <a href="https://yt1s.com" target="_blank" style="color:#00d4ff">yt1s.com</a><br>Paste link YouTube lo di sana.');
+                }
+                else {
+                    showResult('error', '❌ Error: ' + err.message);
+                }
             }
+            
+            showLoader(false);
         }
-
+        
+        function showLoader(show) {
+            document.getElementById('loader').style.display = show ? 'block' : 'none';
+        }
+        
+        function showResult(type, title, message = '') {
+            const resultDiv = document.getElementById('result');
+            const icon = type === 'success' ? '🎉' : (type === 'error' ? '⚠️' : 'ℹ️');
+            let bgColor = type === 'success' ? 'rgba(74, 222, 128, 0.1)' : (type === 'error' ? 'rgba(248, 113, 113, 0.1)' : 'rgba(100, 116, 139, 0.1)');
+            let borderColor = type === 'success' ? '#4ade80' : (type === 'error' ? '#f87171' : '#64748b');
+            
+            let html = `<div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                            <span style="font-size: 1.5rem;">${icon}</span>
+                            <strong style="color: ${borderColor}">${title}</strong>
+                        </div>`;
+            if (message) html += `<div style="margin-top: 10px;">${message}</div>`;
+            
+            resultDiv.innerHTML = html;
+            resultDiv.style.display = 'block';
+            resultDiv.style.background = bgColor;
+            resultDiv.style.borderLeftColor = borderColor;
+            
+            setTimeout(() => {
+                if (!document.getElementById('loader').style.display === 'block') {
+                    // keep result
+                }
+            }, 100);
+        }
+        
         // Tab switching
         document.querySelectorAll('.tab-btn').forEach(btn => {
             btn.addEventListener('click', () => {
@@ -178,6 +340,7 @@
                 btn.classList.add('active');
                 document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
                 document.getElementById(btn.dataset.tab).classList.add('active');
+                document.getElementById('result').style.display = 'none';
             });
         });
     </script>
